@@ -7,8 +7,8 @@ STM32F407 Port: Jim
 #include "stm32f4xx_hal.h"
 #include "can_STM32.h"
 #include "canfestival.h"
-#include "misc.h"
-
+//#include "misc.h"
+extern CAN_HandleTypeDef hcan1;
 /**
  * Send a CAN Message Passed from the CANOpen Stack
  * @param  CANx CAN_PORT used 1 or 2.

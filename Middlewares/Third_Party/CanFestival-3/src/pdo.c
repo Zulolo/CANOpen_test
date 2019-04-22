@@ -193,9 +193,9 @@ proceedPDO (CO_Data * d, Message * m)
   offset = 0x00;
   numPdo = 0;
   numMap = 0;
-  if ((*m).rtr == NOT_A_REQUEST)
+  if ((*m).rtr == NOT_A_REQUEST)/* 非远程帧 */
     { 
-      offsetObjdict = d->firstIndex->PDO_RCV;
+      offsetObjdict = d->firstIndex->PDO_RCV; //从RPDO处开始寻找
       lastIndex = d->lastIndex->PDO_RCV;
 
       if (offsetObjdict)
@@ -405,7 +405,7 @@ proceedPDO (CO_Data * d, Message * m)
                     }
                   canSend (d->canHandle, &pdo);
                   return 0;
-                }
+                }	
               }                 /* end switch status */
           }                     /* end while */
     }                           /* end if Requete */

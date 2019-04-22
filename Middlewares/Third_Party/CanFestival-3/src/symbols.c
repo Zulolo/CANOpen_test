@@ -1,4 +1,4 @@
-#include <linux/module.h>
+//#include <linux/module.h>
 #include "data.h"
 #include "can_driver.h"
 #include "dcf.h"
@@ -117,7 +117,7 @@ EXPORT_SYMBOL (sendSYNC);
 EXPORT_SYMBOL (sendSYNCMessage);
 EXPORT_SYMBOL (proceedSYNC);
 
-// timers.h
+// timer.h
 EXPORT_SYMBOL (SetAlarm);
 EXPORT_SYMBOL (DelAlarm);
 EXPORT_SYMBOL (TimeDispatch);

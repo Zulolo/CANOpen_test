@@ -83,22 +83,22 @@ void canDispatch(CO_Data* d, Message *m)
 		case PDO3rx:
 		case PDO4tx:
 		case PDO4rx:
-			if (d->CurrentCommunicationState.csPDO)
+			if (d->CurrentCommunicationState.csPDO)  //在此处理PDO信息
 				proceedPDO(d,m);
 			break;
 		case SDOtx:
 		case SDOrx:
-			if (d->CurrentCommunicationState.csSDO)
+			if (d->CurrentCommunicationState.csSDO) //在此处理SDO信息
 				proceedSDO(d,m);
 			break;
 		case NODE_GUARD:
-			if (d->CurrentCommunicationState.csLifeGuard)
+			if (d->CurrentCommunicationState.csHeartbeat)  //在此处理HeartBeat信息
 				proceedNODE_GUARD(d,m);
 			break;
 		case NMT:
 			if (*(d->iam_a_slave))
 			{
-				proceedNMTstateChange(d,m);
+				proceedNMTstateChange(d,m);  //在此处理NMT信息
 			}
             break;
 #ifdef CO_ENABLE_LSS
@@ -116,7 +116,7 @@ void canDispatch(CO_Data* d, Message *m)
 #endif
 	}
 }
-
+/*0->1:Start  1->0:Stop*/
 #define StartOrStop(CommType, FuncStart, FuncStop) \
 	if(newCommunicationState->CommType && d->CurrentCommunicationState.CommType == 0){\
 		MSG_WAR(0x9999,#FuncStart, 9999);\
@@ -142,7 +142,7 @@ void switchCommunicationState(CO_Data* d, s_state_communication *newCommunicatio
 #endif
 	StartOrStop(csSDO,	None,		resetSDO(d))
 	StartOrStop(csSYNC,	startSYNC(d),		stopSYNC(d))
-	StartOrStop(csLifeGuard,	lifeGuardInit(d),	lifeGuardStop(d))
+	StartOrStop(csHeartbeat,	heartbeatInit(d),	heartbeatStop(d))
 	StartOrStop(csEmergency,	emergencyInit(d),	emergencyStop(d)) 
 	StartOrStop(csPDO,	PDOInit(d),	PDOStop(d))
 	StartOrStop(csBoot_Up,	None,	slaveSendBootUp(d))
@@ -153,7 +153,7 @@ void switchCommunicationState(CO_Data* d, s_state_communication *newCommunicatio
 **                                                                                                 
 ** @param d                                                                                        
 ** @param newState                                                                                 
-**                                                                                                 
+**                                                                                                
 ** @return                                                                                         
 **/  
 UNS8 setState(CO_Data* d, e_nodeState newState)
@@ -161,8 +161,8 @@ UNS8 setState(CO_Data* d, e_nodeState newState)
 	if(newState != d->nodeState){
 		switch( newState ){
 			case Initialisation:
-			{
-				s_state_communication newCommunicationState = {1, 0, 0, 0, 0, 0, 0};
+			{	                                            /*BUp;SDO;EMY;SYNC;Hb;PDO;LSS;*/
+				s_state_communication newCommunicationState = {1,  0,  0,   0,  0, 0,  0};
 				d->nodeState = Initialisation;
 				switchCommunicationState(d, &newCommunicationState);
 				/* call user app init callback now. */
@@ -314,6 +314,9 @@ void _preOperational(CO_Data* d){
     {
         masterSendNMTstateChange (d, 0, NMT_Reset_Node);
     }
+		
+		//Just For TEST: Automatic RUN into Operational Mode
+		setState(d, Operational);
 }
 void _operational(CO_Data* d){}
 void _stopped(CO_Data* d){}

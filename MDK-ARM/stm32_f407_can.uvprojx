@@ -1008,11 +1008,6 @@
               <FilePath>..\Middlewares\Third_Party\CanFestival-3\src\states.c</FilePath>
             </File>
             <File>
-              <FileName>symbols.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\CanFestival-3\src\symbols.c</FilePath>
-            </File>
-            <File>
               <FileName>sync.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\CanFestival-3\src\sync.c</FilePath>
@@ -1023,11 +1018,6 @@
               <FilePath>..\Middlewares\Third_Party\CanFestival-3\src\timer.c</FilePath>
             </File>
             <File>
-              <FileName>CHASSIS_OD.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\CanFestival-3\objdict\CHASSIS_OD.c</FilePath>
-            </File>
-            <File>
               <FileName>can_STM32.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\CanFestival-3\driver\can_STM32.c</FilePath>
@@ -1036,6 +1026,11 @@
               <FileName>timer_STM32.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\CanFestival-3\driver\timer_STM32.c</FilePath>
+            </File>
+            <File>
+              <FileName>ARM_OD.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\Third_Party\CanFestival-3\objdict\ARM_OD.c</FilePath>
             </File>
           </Files>
         </Group>

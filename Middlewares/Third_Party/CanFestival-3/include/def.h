@@ -162,18 +162,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 /* constantes used in the different state machines */
 /* ----------------------------------------------- */
-/* Must not be modified */
-#define state1  0x01
-#define state2  0x02
-#define state3  0x03
-#define state4  0x04
-#define state5  0x05
-#define state6  0x06
-#define state7  0x07
-#define state8  0x08
-#define state9  0x09
-#define state10 0x0A
-#define state11 0x0B
+/* Must not be modified */  //Still don't know what this means
+#define state1  0x01//Still don't know what this means
+#define state2  0x02//Still don't know what this means
+#define state3  0x03//Still don't know what this means
+#define state4  0x04//Still don't know what this means
+#define state5  0x05//Still don't know what this means
+#define state6  0x06//Still don't know what this means
+#define state7  0x07//Still don't know what this means
+#define state8  0x08//Still don't know what this means
+#define state9  0x09//Still don't know what this means
+#define state10 0x0A//Still don't know what this means
+#define state11 0x0B//Still don't know what this means
 
 #endif /* __def_h__ */
 

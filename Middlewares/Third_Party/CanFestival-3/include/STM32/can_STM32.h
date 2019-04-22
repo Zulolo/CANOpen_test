@@ -28,8 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 // Canfestivals includes
 #include "can.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_can.h"
+#include "stm32f4xx_hal.h"
 
 // Number of receive MB
 #define NB_MB				8
@@ -46,6 +45,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #define START_TX_MB			NB_RX_MB
 #define TX_INT_MSK			((0xFF << (NB_MB - NB_TX_MB)) & 0xFF)
 #define RX_INT_MSK			(0xFF >> (NB_MB - NB_RX_MB))
+
+typedef struct
+{
+	CAN_RxHeaderTypeDef   RxHeader;
+  uint8_t Data[8]; /*!< Contains the data to be received. It ranges from 0 to 
+                        0xFF. */
+} CanRxMsg;
 
 typedef struct{
 	UNS8 CANx;

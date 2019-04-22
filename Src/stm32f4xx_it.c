@@ -27,7 +27,7 @@
 //#include "globalstruct.h"
 #include "canfestival.h"
 #include "can_STM32.h"
-#include "CHASSIS_OD.h"
+#include "ARM_OD.h"
 
 /* USER CODE END Includes */
 
@@ -172,7 +172,7 @@ void DebugMon_Handler(void)
 void CAN1_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
-
+	CAN_RxHeaderTypeDef   RxHeader;
   /* USER CODE END CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
@@ -184,7 +184,7 @@ void CAN1_RX0_IRQHandler(void)
 
 	taskENTER_CRITICAL();   
 
-	CAN_Receive(CAN1, CAN_FIFO0, &(CAN1_Rx_m.m));	
+	HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &(CAN1_Rx_m.m.RxHeader), CAN1_Rx_m.m.Data);	
 
 	CAN1_Rx_m.CANx = 1;
 

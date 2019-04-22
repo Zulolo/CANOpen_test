@@ -55,9 +55,9 @@ typedef struct struct_CO_Data CO_Data;
  */
 struct struct_CO_Data {
 	/* Object dictionary */
-	UNS8 *bDeviceNodeId;
-	const indextable *objdict;
-	s_PDO_status *PDO_status;
+	UNS8 *bDeviceNodeId;		//指向NodeID的指针
+	const indextable *objdict;	//指针常量
+	s_PDO_status *PDO_status;	//
 	TIMER_HANDLE *RxPDO_EventTimers;
 	void (*RxPDO_EventTimers_Handler)(CO_Data*, UNS32);
 	const quick_index *firstIndex;
@@ -88,14 +88,6 @@ struct struct_CO_Data {
 	TIMER_HANDLE ProducerHeartBeatTimer;
 	heartbeatError_t heartbeatError;
 	e_nodeState NMTable[NMT_MAX_NODE_ID]; 
-
-	/* NMT-nodeguarding */
-	TIMER_HANDLE GuardTimeTimer;
-	TIMER_HANDLE LifeTimeTimer;
-	nodeguardError_t nodeguardError;
-	UNS16 *GuardTime;
-	UNS8 *LifeTimeFactor;
-	UNS8 nodeGuardStatus[NMT_MAX_NODE_ID];
 
 	/* SYNC */
 	TIMER_HANDLE syncTimer;
@@ -139,11 +131,10 @@ struct struct_CO_Data {
 };
 
 #define NMTable_Initializer Unknown_state,
-#define nodeGuardStatus_Initializer 0x00,
 
 #ifdef SDO_DYNAMIC_BUFFER_ALLOCATION
 #define s_transfer_Initializer {\
-		0,          /* CliServ{REPEAT_NMT_MAX_NODE_ID_TIMES(NMTable_Initializer)},Nbr */\
+		0,          /* CliServNbr */\
 		0,          /* wohami */\
 		SDO_RESET,  /* state */\
 		0,          /* toggle */\
@@ -293,14 +284,6 @@ struct struct_CO_Data {
 	{REPEAT_NMT_MAX_NODE_ID_TIMES(NMTable_Initializer)},\
                                                    /* is  well initialized at "Unknown_state". Is it ok ? (FD)*/\
 	\
-	/* NMT-nodeguarding */\
-	TIMER_NONE,                                /* GuardTimeTimer */\
-	TIMER_NONE,                                /* LifeTimeTimer */\
-	_nodeguardError,           /* nodeguardError */\
-	& NODE_PREFIX ## _obj100C,                 /* GuardTime */\
-	& NODE_PREFIX ## _obj100D,                 /* LifeTimeFactor */\
-	{REPEAT_NMT_MAX_NODE_ID_TIMES(nodeGuardStatus_Initializer)},\
-	\
 	/* SYNC */\
 	TIMER_NONE,                                /* syncTimer */\
 	& NODE_PREFIX ## _obj1005,                 /* COB_ID_Sync */\
@@ -313,7 +296,7 @@ struct struct_CO_Data {
 	\
 	/* General */\
 	0,                                         /* toggle */\
-	NULL,                   /* canSend */\
+	CAN2,                   /* canSend NULL original-test jim*/\
 	NODE_PREFIX ## _scanIndexOD,                /* scanIndexOD */\
 	_storeODSubIndex,                /* storeODSubIndex */\
     /* DCF concise */\

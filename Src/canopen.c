@@ -3,32 +3,31 @@
 
 #include "canfestival.h"
 #include "can_STM32.h"
-#include "CHASSIS_OD.h"
+#include "ARM_OD.h"
 
 /*store date CAN receive*/
 xQueueHandle xQ_CAN_MSG = NULL;
 xTaskHandle  xT_CANOpen = NULL;
 
-extern CO_Data *CO_CAN1;
+CO_Data *CO_CAN1;
 extern CAN_HandleTypeDef hcan1;
 
 void canopen_dataprocess_thread(void * pvParameters)
 {
 	int i;
-	unsigned char ret_canInit;
 	Message RxMSG = Message_Initializer; /* 标准的CAN2.0A信息，初始化清零 */
 	CANOpen_Message CAN_Rx_m;            /* CANOpen Message 包含CAN Port(CANx) */
 
 	/* CANOpen Initialising */
 	initTimer();
-	setNodeId (&CHASSIS_OD_Data, CHASSIS_ID);
+	setNodeId (&ARM_OD_Data, 0xA5);
 
-	CO_CAN1 = &CHASSIS_OD_Data;
-	CO_CAN1->canHandle = hcan1;  //Config CANOpen Port CAN1
+	CO_CAN1 = &ARM_OD_Data;
+	CO_CAN1->canHandle = &hcan1;  //Config CANOpen Port CAN1
 
 	/* State Machine Change to Initialisation and automatic go into Pre_operational*/
 	//setState(&ObjDict_CAN2_Data, Initialisation);
-	setState(&CHASSIS_OD_Data, Initialisation);
+	setState(&ARM_OD_Data, Initialisation);
 	printf("State Machine change to Initialisation...\r\n");
 	/*****************************************************************************
 	* Initialisation -> Pre_operational -> StartOrStop ->
@@ -59,26 +58,27 @@ void canopen_dataprocess_thread(void * pvParameters)
 	}
 
 	while(1) {
-	if(xQueueReceive(xQ_CAN_MSG, &(CAN_Rx_m), (portTickType)100)) {
-		printf("Thread get a CAN packege ");
+		if(xQueueReceive(xQ_CAN_MSG, &(CAN_Rx_m), (portTickType)100)) {
+			printf("Thread get a CAN package ");
 
-		/* 将队列中的数据存储到RxMSG中 */
-		RxMSG.cob_id = (uint16_t)(CAN_Rx_m.m.StdId);
-		RxMSG.rtr = CAN_Rx_m.m.RTR;
-		RxMSG.len = CAN_Rx_m.m.DLC;
-		for(i=0;i<RxMSG.len;i++) {
-			RxMSG.data[i] = CAN_Rx_m.m.Data[i]; //Transfer data[0-7] from CAN_Rx_m to RxMSG
+			/* 将队列中的数据存储到RxMSG中 */
+			RxMSG.cob_id = (uint16_t)(CAN_Rx_m.m.RxHeader.StdId);
+			RxMSG.rtr = CAN_Rx_m.m.RxHeader.RTR;
+			RxMSG.len = CAN_Rx_m.m.RxHeader.DLC;
+			for(i=0;i<RxMSG.len;i++) {
+				RxMSG.data[i] = CAN_Rx_m.m.Data[i]; //Transfer data[0-7] from CAN_Rx_m to RxMSG
+			}
+			printf("from CAN%u: 0x%x| ", CAN_Rx_m.CANx,CAN_Rx_m.m.RxHeader.StdId);
+			for(i=0;i<RxMSG.len;i++) {
+				printf("0x%x ", RxMSG.data[i]);
+			}
+			printf("\r\n");
+
+			/*Handle The Data Receive, 此处和对象字典进行交互*/
+			canDispatch(CO_CAN1, &RxMSG); 
+
+			vTaskDelay(50);
 		}
-		printf("from CAN%u: 0x%x| ", CAN_Rx_m.CANx,CAN_Rx_m.m.StdId);
-		for(i=0;i<RxMSG.len;i++) {
-			printf("0x%x ", RxMSG.data[i]);
-		}
-		printf("\r\n");
-
-		/*Handle The Data Receive, 此处和对象字典进行交互*/
-		canDispatch(CO_CAN1, &RxMSG); 
-
-		vTaskDelay(CANOpen_THREAD_DELAY_TIMER);
 	}
 }
 
